@@ -1,4 +1,4 @@
-{ stdenv, cmake, wine, rapidjson }:
+{ stdenv, wine, rapidjson }:
 
 stdenv.mkDerivation {
   pname = "rpc-wine";
@@ -6,11 +6,17 @@ stdenv.mkDerivation {
 
   src = builtins.fetchGit ./.;
 
-  nativeBuildInputs = [ cmake ];
-
   buildInputs = [ wine rapidjson ];
 
-  cmakeFlags = [ "-D32BIT=OFF" ];
+  buildPhase = ''
+    runHook preBuild
+
+    chmod +x build.sh
+    patchShebangs build.sh
+    ./build.sh -s32
+
+    runHook postBuild
+  '';
 
   installPhase = ''
     runHook preInstall
