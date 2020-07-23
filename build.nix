@@ -23,6 +23,10 @@ stdenv.mkDerivation {
 
     install -D bin64/discord-rpc.dll.so $out/lib/discord-rpc.dll.so
 
+    mkdir -p $out/etc/profile.d
+    substitute discord-rpc-wine.sh $out/etc/profile.d/discord-rpc-wine.sh \
+      --replace '@dllpath@' $out/lib
+
     runHook postInstall
   '';
 }
